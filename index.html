@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LegalMind AI</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101827;
+      color: white;
+      text-align: center;
+    }
+    header {
+      padding: 25px;
+      border-bottom: 1px solid #344054;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    main {
+      max-width: 700px;
+      margin: 80px auto;
+      padding: 20px;
+    }
+    h1 { font-size: 38px; }
+    p { color: #b8c3d4; line-height: 1.6; }
+    select, textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+    select, textarea {
+      background: #202d40;
+      color: white;
+      border: 1px solid #43536b;
+    }
+    textarea { height: 120px; resize: vertical; }
+    button {
+      background: #3978ee;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #245bc2; }
+    #answer {
+      display: none;
+      background: #202d40;
+      padding: 20px;
+      margin-top: 25px;
+      border-radius: 10px;
+      text-align: left;
+      line-height: 1.6;
+    }
+    .disclaimer {
+      font-size: 13px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>⚖️ LegalMind AI</header>
+
+  <main>
+    <h1>Your AI Legal Assistant</h1>
+    <p>
+      Ask legal questions and explore legal concepts
+      with the help of artificial intelligence.
+    </p>
+
+    <select id="country">
+      <option value="United States">United States Law</option>
+      <option value="Uzbekistan">Uzbekistan Law</option>
+    </select>
+
+    <textarea id="question"
+      placeholder="Write your legal question here..."></textarea>
+
+    <button onclick="askQuestion()">Ask LegalMind AI</button>
+
+    <div id="answer"></div>
+
+    <p class="disclaimer">
+      Educational demonstration only. Not legal advice.
+      Always consult a qualified attorney.
+    </p>
+  </main>
+
+  <script>
+    function askQuestion() {
+      const question = document.getElementById("question").value.trim();
+      const country = document.getElementById("country").value;
+      const answer = document.getElementById("answer");
+
+      if (!question) {
+        alert("Please enter a legal question.");
+        return;
+      }
+
+      answer.style.display = "block";
+      answer.textContent =
+        "Your question about " + country +
+        " law: " + question +
+        "\n\nThis is an early prototype. AI integration " +
+        "and verified legal sources will be added in the next version.";
+    }
+  </script>
+</body>
+</html>
