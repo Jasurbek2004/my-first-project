@@ -1,4 +1,4 @@
-
+const OFFICIAL_SOURCES = require("./sources");
 module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== "POST") {
@@ -28,7 +28,12 @@ module.exports = async (req, res) => {
         error: "Unsupported country."
       });
     }
-
+const sourceList = (OFFICIAL_SOURCES[country] || [])
+  .map(source =>
+    `- ${source.name} (${source.jurisdiction}): ${source.url}`
+  )
+  .join("\n");
+    
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -44,7 +49,14 @@ Jurisdiction: ${country}
 
 User's legal question:
 ${question}
+OFFICIAL SOURCE PORTALS:
+${sourceList}
 
+These are official source portals, not retrieved legal texts.
+Never claim that you accessed or verified a statute unless
+its actual text was retrieved and checked.
+Use only genuine legal citations.
+If the exact legal provision cannot be verified, say so.
 IMPORTANT LEGAL ACCURACY RULES:
 
 1. Answer in clear, simple English.
