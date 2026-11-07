@@ -91,24 +91,54 @@
     </p>
   </main>
 
-  <script>
-    function askQuestion() {
-      const question = document.getElementById("question").value.trim();
-      const country = document.getElementById("country").value;
-      const answer = document.getElementById("answer");
+ 
+<script>
+  async function askQuestion() {
+    const question = document.getElementById("question").value.trim();
+    const country = document.getElementById("country").value;
+    const answer = document.getElementById("answer");
+    const button = document.querySelector("button");
 
-      if (!question) {
-        alert("Please enter a legal question.");
-        return;
+    if (!question) {
+      alert("Please enter a legal question.");
+      return;
+    }
+
+    answer.style.display = "block";
+    answer.style.whiteSpace = "pre-wrap";
+    answer.textContent = "LegalMind AI is thinking...";
+    button.disabled = true;
+    button.textContent = "Please wait...";
+
+    try {
+      const response = await fetch("/api/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          question: question,
+          country: country
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong.");
       }
 
-      answer.style.display = "block";
+      answer.textContent = data.answer;
+
+    } catch (error) {
       answer.textContent =
-        "Your question about " + country +
-        " law: " + question +
-        "\n\nThis is an early prototype. AI integration " +
-        "and verified legal sources will be added in the next version.";
+        "Sorry, an error occurred: " + error.message;
+
+    } finally {
+      button.disabled = false;
+      button.textContent = "Ask LegalMind AI";
     }
-  </script>
+  }
+</script>
 </body>
 </html>
