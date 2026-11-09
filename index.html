@@ -1,1015 +1,1060 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090d1c">
-  <meta name="description" content="Ask LegalMind AI questions about law and any topic in Uzbek, English, or Russian.">
-  <title>LegalMind AI | Your Intelligent Legal Assistant</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --gold: #d9b875;
-      --gold-light: #f0d59b;
-      --text: #f5f6fc;
-      --muted: #a7b0c5;
-      --border: rgba(255, 255, 255, 0.11);
-      --sidebar-width: 250px;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at 10% 15%, rgba(52, 69, 153, 0.35), transparent 40%),
-        radial-gradient(ellipse at 90% 20%, rgba(108, 55, 151, 0.28), transparent 38%),
-        radial-gradient(ellipse at 50% 100%, rgba(24, 92, 112, 0.22), transparent 45%),
-        linear-gradient(135deg, #080c19 0%, #10172d 48%, #090d1b 100%);
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.15;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 45px 45px;
-      z-index: 0;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      width: var(--sidebar-width);
-      min-height: 100vh;
-      padding: 28px 18px 20px;
-      display: flex;
-      flex-direction: column;
-      background: rgba(7, 12, 27, 0.94);
-      border-right: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      z-index: 20;
-    }
-
-    .sidebar-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 2px 0 34px;
-      color: var(--text);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      white-space: nowrap;
-    }
-
-    .sidebar-logo .logo-mark {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(217, 184, 117, 0.5);
-      border-radius: 11px;
-      background: rgba(217, 184, 117, 0.1);
-      color: var(--gold-light);
-      font-size: 21px;
-    }
-
-    .sidebar-logo span {
-      color: var(--gold-light);
-    }
-
-    .new-chat-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 13px 12px;
-      border: 1px solid rgba(214,181,109,0.5);
-      border-radius: 12px;
-      background: linear-gradient(135deg, #e8cb91, #b98c48);
-      color: #111626;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .new-chat-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(217,184,117,0.2);
-    }
-
-    .sidebar-section {
-      margin-top: 34px;
-      min-height: 0;
-    }
-
-    .sidebar-heading {
-      margin: 0 0 13px 10px;
-      color: #77839d;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-
-    .sidebar-link {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 12px 10px;
-      margin-bottom: 5px;
-      border: 0;
-      border-radius: 9px;
-      background: transparent;
-      color: #c5cede;
-      font: inherit;
-      font-size: 13px;
-      text-align: left;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .sidebar-link:hover,
-    .sidebar-link.active {
-      background: rgba(255,255,255,0.075);
-      color: #fff;
-    }
-
-    .sidebar-link .nav-icon {
-      width: 20px;
-      flex: 0 0 20px;
-      font-size: 16px;
-      text-align: center;
-    }
-
-    .history-list {
-      max-height: 34vh;
-      overflow-y: auto;
-      margin-top: 10px;
-    }
-
-    .history-item {
-      display: block;
-      width: 100%;
-      overflow: hidden;
-      padding: 10px;
-      border: 0;
-      border-radius: 8px;
-      background: transparent;
-      color: #aeb8cc;
-      font: inherit;
-      font-size: 12px;
-      text-align: left;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    .history-item:hover {
-      background: rgba(255,255,255,0.07);
-      color: #fff;
-    }
-
-    .history-empty {
-      padding: 5px 10px;
-      color: #748099;
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    .sidebar-bottom {
-      margin-top: auto;
-      padding: 16px 10px 2px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      color: var(--gold-light);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .sidebar-bottom small {
-      color: #7f8da5;
-      font-size: 11px;
-      font-weight: 400;
-    }
-
-    /* TOP NAVIGATION */
-    .navbar {
-      width: calc(100% - var(--sidebar-width));
-      min-height: 78px;
-      margin-left: var(--sidebar-width);
-      padding: 17px 6%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      background: rgba(7, 11, 24, 0.48);
-      backdrop-filter: blur(18px);
-      position: relative;
-      z-index: 2;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(217, 184, 117, 0.5);
-      border-radius: 11px;
-      background: rgba(217, 184, 117, 0.1);
-      color: var(--gold-light);
-      font-size: 21px;
-    }
-
-    .brand span {
-      color: var(--gold-light);
-    }
-
-    .nav-label {
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-    }
-
-    /* MAIN CONTENT */
-    main {
-      width: min(850px, calc(100% - 330px));
-      margin: 68px auto 60px;
-      position: relative;
-      left: calc(var(--sidebar-width) / 2);
-      z-index: 1;
-      text-align: center;
-    }
-
-    .status {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 17px;
-      border: 1px solid rgba(217, 184, 117, 0.27);
-      border-radius: 30px;
-      background: rgba(217, 184, 117, 0.07);
-      color: var(--gold-light);
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 25px;
-    }
-
-    .status-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #72d6a0;
-      box-shadow: 0 0 10px #72d6a0;
-    }
-
-    h1 {
-      font-size: clamp(38px, 5.5vw, 62px);
-      line-height: 1.12;
-      letter-spacing: -2px;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    h1 span {
-      background: linear-gradient(100deg, #f0d59b, #d5a95f, #f5e2b8);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .intro {
-      max-width: 610px;
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    .features {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 27px 0 34px;
-    }
-
-    .feature {
-      padding: 9px 14px;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      color: #c8cede;
-      font-size: 11px;
-    }
-
-    .chat-card {
-      padding: 29px;
-      text-align: left;
-      border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 22px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.085), rgba(255,255,255,0.025));
-      box-shadow: 0 25px 80px rgba(0,0,0,0.35);
-      backdrop-filter: blur(20px);
-    }
-
-    .card-heading {
-      margin-bottom: 23px;
-    }
-
-    .card-heading h2 {
-      font-size: 19px;
-      margin-bottom: 7px;
-    }
-
-    .card-heading p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    label {
-      display: block;
-      margin: 19px 0 9px;
-      color: #e2e6f0;
-      font-size: 13px;
-      font-weight: 650;
-    }
-
-    textarea {
-      display: block;
-      width: 100%;
-      padding: 20px 19px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.13);
-      background: rgba(7,12,27,0.72);
-      color: white;
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      transition: border 0.25s, box-shadow 0.25s;
-    }
-
-    textarea:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(217,184,117,0.1);
-    }
-
-    textarea {
-      min-height: 230px;
-      resize: vertical;
-      line-height: 1.75;
-      font-size: 15px;
-    }
-
-    textarea::placeholder {
-      color: #78839a;
-    }
-
-    .composer-hint {
-      margin-top: 10px;
-      color: #8993a9;
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    .submit-btn {
-      width: 100%;
-      margin-top: 18px;
-      padding: 15px 20px;
-      border: 0;
-      border-radius: 12px;
-      color: #151321;
-      background: linear-gradient(105deg, #e8cb91, #c99d53);
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 9px 28px rgba(217,184,117,0.23);
-    }
-
-    .submit-btn:disabled {
-      cursor: wait;
-      opacity: 0.65;
-      transform: none;
-    }
-
-    #answer {
-      display: none;
-      margin-top: 24px;
-      padding: 21px;
-      border: 1px solid rgba(217,184,117,0.25);
-      border-radius: 15px;
-      background: rgba(5,10,23,0.72);
-      color: #e4e8f2;
-      text-align: left;
-      line-height: 1.8;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    .answer-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .answer-title {
-      color: var(--gold-light);
-      font-size: 15px;
-      font-weight: 750;
-    }
-
-    .answer-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .small-action {
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.06);
-      color: #dce2ef;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .small-action:hover {
-      background: rgba(255,255,255,0.12);
-    }
-
-    #answerText {
-      white-space: pre-wrap;
-    }
-
-    .disclaimer {
-      max-width: 650px;
-      margin: 25px auto 0;
-      color: #8993a9;
-      font-size: 11px;
-      line-height: 1.8;
-      text-align: center;
-    }
-
-    footer {
-      width: calc(100% - var(--sidebar-width));
-      margin-left: var(--sidebar-width);
-      padding: 23px 5%;
-      border-top: 1px solid var(--border);
-      color: #7f899f;
-      text-align: center;
-      font-size: 11px;
-      position: relative;
-      z-index: 1;
-    }
-
-    footer span {
-      color: var(--gold);
-    }
-
-    .toast {
-      position: fixed;
-      left: calc(var(--sidebar-width) + (100% - var(--sidebar-width)) / 2);
-      bottom: 25px;
-      transform: translateX(-50%) translateY(15px);
-      padding: 11px 16px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #17213a;
-      color: #fff;
-      font-size: 12px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s, transform 0.2s;
-      z-index: 50;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* TABLET AND MOBILE */
-    @media (max-width: 900px) {
-      :root {
-        --sidebar-width: 210px;
-      }
-
-      .sidebar {
-        padding-left: 13px;
-        padding-right: 13px;
-      }
-
-      main {
-        width: min(760px, calc(100% - 270px));
-      }
-
-      .nav-label {
-        display: none;
-      }
-    }
-
-    @media (max-width: 650px) {
-      :root {
-        --sidebar-width: 66px;
-      }
-
-      .sidebar {
-        padding: 17px 8px;
-        align-items: center;
-      }
-
-      .sidebar-logo {
-        margin: 0 0 28px;
-      }
-
-      .sidebar-logo .logo-mark {
-        width: 42px;
-        height: 42px;
-      }
-
-      .sidebar-logo .logo-text,
-      .new-chat-label,
-      .sidebar-heading,
-      .nav-text,
-      .sidebar-bottom,
-      .history-list {
-        display: none;
-      }
-
-      .new-chat-btn {
-        width: 46px;
-        height: 44px;
-        padding: 0;
-        font-size: 22px;
-      }
-
-      .sidebar-link {
-        justify-content: center;
-        width: 48px;
-        height: 45px;
-        padding: 0;
-        margin-top: 8px;
-      }
-
-      .sidebar-link .nav-icon {
-        font-size: 18px;
-      }
-
-      .navbar {
-        padding: 15px 17px;
-      }
-
-      .brand {
-        font-size: 16px;
-      }
-
-      main {
-        width: calc(100% - 92px);
-        left: 33px;
-        margin-top: 45px;
-      }
-
-      h1 {
-        font-size: clamp(32px, 8vw, 46px);
-        letter-spacing: -1.2px;
-      }
-
-      .intro {
-        font-size: 13px;
-      }
-
-      .chat-card {
-        padding: 20px 16px;
-        border-radius: 17px;
-      }
-
-      .features {
-        gap: 7px;
-      }
-
-      .feature {
-        font-size: 10px;
-      }
-
-      .answer-toolbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      footer {
-        padding: 20px 12px;
-      }
-
-      .toast {
-        left: calc(var(--sidebar-width) + (100% - var(--sidebar-width)) / 2);
-        width: max-content;
-        max-width: calc(100% - 85px);
-      }
-    }
-
-    @media (max-width: 380px) {
-      .brand {
-        font-size: 14px;
-      }
-
-      .brand-icon {
-        width: 31px;
-        height: 31px;
-      }
-
-      main {
-        width: calc(100% - 84px);
-        left: 33px;
-      }
-
-      .status {
-        font-size: 9px;
-        padding: 8px 11px;
-      }
-    }
-    .creator {
-  font-size: 11px;
-  color: #9ca3af;
-  margin-top: 4px;
-  letter-spacing: 0.5px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<meta name="description" content="LegalMind AI - Your multilingual AI assistant.">
+<title>LegalMind AI</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-  </style>
+
+:root {
+  --bg: #0b1020;
+  --sidebar: #090e1c;
+  --panel: #111a2e;
+  --panel-light: #1e293b;
+  --blue: #3b82f6;
+  --indigo: #6366f1;
+  --purple: #8b5cf6;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --border: rgba(255,255,255,0.09);
+  --sidebar-width: 270px;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(99,102,241,.15), transparent 40%),
+    radial-gradient(ellipse at 20% 90%, rgba(59,130,246,.12), transparent 40%),
+    var(--bg);
+}
+
+/* MAIN LAYOUT */
+
+.app {
+  display: flex;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 15px;
+  background: rgba(7,12,25,.97);
+  border-right: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 5px 8px 25px;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.7px;
+}
+
+.logo-icon {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg,var(--blue),var(--purple));
+  font-size: 20px;
+}
+
+.logo span {
+  color: #60a5fa;
+}
+
+.new-chat {
+  width: 100%;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(96,165,250,.35);
+  border-radius: 11px;
+  color: white;
+  background: linear-gradient(110deg,#2563eb,#6366f1);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.new-chat:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+.sidebar-heading {
+  margin: 29px 9px 13px;
+  color: #74829b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.history-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.history-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 10px;
+  margin-bottom: 4px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.history-item:hover,
+.history-item.active {
+  background: #1b263b;
+  color: white;
+}
+
+.history-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty-history {
+  padding: 8px 10px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.sidebar-bottom {
+  padding: 16px 9px 3px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sidebar-bottom strong {
+  color: #60a5fa;
+  font-size: 12px;
+}
+
+.sidebar-bottom small {
+  color: #75839a;
+  font-size: 11px;
+}
+
+/* CHAT AREA */
+
+.chat-area {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 64px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 27px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(9,14,28,.55);
+}
+
+.topbar-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.topbar-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* MESSAGES */
+
+.messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 35px 24px 30px;
+  scroll-behavior: smooth;
+}
+
+.messages-inner {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.welcome {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 35px 15px;
+}
+
+.welcome-icon {
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 23px;
+  border-radius: 20px;
+  background: linear-gradient(135deg,var(--blue),var(--purple));
+  box-shadow: 0 10px 40px rgba(99,102,241,.25);
+  font-size: 29px;
+}
+
+.welcome h1 {
+  margin-bottom: 13px;
+  font-size: clamp(25px,4vw,38px);
+  letter-spacing: -1px;
+}
+
+.welcome h1 span {
+  color: #60a5fa;
+}
+
+.welcome p {
+  max-width: 500px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 27px;
+}
+
+.suggestion {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  background: rgba(255,255,255,.035);
+  color: #cbd5e1;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.1);
+}
+
+/* MESSAGE BUBBLES */
+
+.message {
+  display: flex;
+  gap: 13px;
+  margin-bottom: 27px;
+  animation: appear .25s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message-content {
+  max-width: min(82%,760px);
+  padding: 15px 18px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.message.user .message-content {
+  background: linear-gradient(120deg,#2563eb,#4f46e5);
+  color: white;
+  border-bottom-right-radius: 5px;
+}
+
+.message.assistant .message-content {
+  background: rgba(30,41,59,.72);
+  border: 1px solid var(--border);
+  color: #e2e8f0;
+  border-bottom-left-radius: 5px;
+}
+
+.message-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg,var(--blue),var(--purple));
+  font-size: 16px;
+}
+
+.message.assistant .message-content {
+  max-width: min(88%,800px);
+}
+
+.message-tools {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.message-tools button {
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: rgba(255,255,255,.04);
+  color: #94a3b8;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.message-tools button:hover {
+  color: white;
+  background: rgba(255,255,255,.1);
+}
+
+/* THINKING */
+
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 2px;
+}
+
+.thinking span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #60a5fa;
+  animation: pulse 1s infinite alternate;
+}
+
+.thinking span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.thinking span:nth-child(3) {
+  animation-delay: .4s;
+}
+
+@keyframes pulse {
+  from { opacity: .3; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(-5px); }
+}
+
+/* FIXED COMPOSER */
+
+.composer-area {
+  flex-shrink: 0;
+  padding: 13px 24px 16px;
+  background: linear-gradient(to top,#0b1020 75%,rgba(11,16,32,.88));
+}
+
+.composer {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 12px 10px 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  border: 1px solid rgba(148,163,184,.22);
+  border-radius: 17px;
+  background: #172238;
+  box-shadow: 0 8px 35px rgba(0,0,0,.25);
+  transition: border .2s, box-shadow .2s;
+}
+
+.composer:focus-within {
+  border-color: rgba(96,165,250,.75);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+}
+
+#question {
+  flex: 1;
+  min-width: 0;
+  max-height: 180px;
+  min-height: 44px;
+  padding: 11px 0;
+  resize: none;
+  overflow-y: auto;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#question::placeholder {
+  color: #8290a8;
+}
+
+.send-button {
+  width: 43px;
+  height: 43px;
+  min-width: 43px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg,var(--blue),var(--purple));
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.send-button:hover {
+  filter: brightness(1.2);
+}
+
+.send-button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+.composer-note {
+  max-width: 900px;
+  margin: 9px auto 0;
+  color: #718096;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* SCROLLBARS */
+
+.messages::-webkit-scrollbar,
+.history-list::-webkit-scrollbar,
+#question::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb,
+.history-list::-webkit-scrollbar-thumb {
+  background: #34415a;
+  border-radius: 10px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px) {
+  :root {
+    --sidebar-width: 68px;
+  }
+
+  .sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    padding: 15px 7px;
+    align-items: center;
+  }
+
+  .logo {
+    padding: 0 0 23px;
+  }
+
+  .logo-text,
+  .sidebar-heading,
+  .history-list,
+  .sidebar-bottom,
+  .new-chat-text {
+    display: none;
+  }
+
+  .new-chat {
+    width: 47px;
+    height: 45px;
+    padding: 0;
+    font-size: 21px;
+  }
+
+  .topbar {
+    padding: 0 15px;
+  }
+
+  .messages {
+    padding: 22px 13px;
+  }
+
+  .message-content {
+    max-width: 88%;
+    font-size: 13px;
+  }
+
+  .composer-area {
+    padding: 10px 12px 12px;
+  }
+
+  .composer {
+    padding-left: 13px;
+  }
+
+  .topbar-label {
+    display: none;
+  }
+
+  .welcome h1 {
+    font-size: 27px;
+  }
+
+  .suggestion {
+    font-size: 10px;
+  }
+}
+</style>
 </head>
 
 <body>
+
+<div class="app">
+
+  <!-- LEFT SIDEBAR -->
+
   <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-mark">⚖</div>
+
+    <div class="logo">
+      <div class="logo-icon">⚖</div>
       <div class="logo-text">LegalMind <span>AI</span></div>
     </div>
 
-    <button class="new-chat-btn" id="newChatButton" type="button" title="Start a new chat">
+    <button class="new-chat" id="newChatButton">
       <span>＋</span>
-      <span class="new-chat-label">New Chat</span>
+      <span class="new-chat-text">New Chat</span>
     </button>
 
-    <div class="sidebar-section">
-      <p class="sidebar-heading">Workspace</p>
+    <div class="sidebar-heading">Your conversations</div>
 
-      <button class="sidebar-link active" id="historyNav" type="button">
-        <span class="nav-icon">💬</span>
-        <span class="nav-text">Chat History</span>
-      </button>
-
-      <a class="sidebar-link" href="#official-sources">
-        <span class="nav-icon">📚</span>
-        <span class="nav-text">Legal Sources</span>
-      </a>
-
-      <div class="history-list" id="historyList">
-        <p class="history-empty" id="historyEmpty">Your recent conversations will appear here.</p>
-      </div>
+    <div class="history-list" id="historyList">
+      <p class="empty-history">Your conversations will appear here.</p>
     </div>
 
     <div class="sidebar-bottom">
-      <span>LegalMind AI</span>
-      <small>Multilingual AI assistant · v2.2</small>
+      <strong>LegalMind AI</strong>
+      <small>Multilingual AI Assistant · v3.0</small>
+      <small>Made by Jasurbek Komilov</small>
     </div>
+
   </aside>
 
-  <header class="navbar">
-    <div class="brand">
-      <div class="brand-icon">⚖</div>
-      <div>LegalMind <span>AI</span></div>
-    </div>
-    <div class="nav-label">Multilingual AI Assistant</div>
-  </header>
+  <!-- RIGHT CHAT AREA -->
 
-  <main>
-    <div class="status">
-      <div class="status-label">
-        <span class="status-dot"></span>
-        AI Legal Assistant
-      </div>
-      <div class="creator">Made by Jasurbek Komilov</div>
-    </div>
+  <section class="chat-area">
 
-    <h1>
-      Understand the Law.<br>
-      <span>Think Smarter.</span>
-    </h1>
+    <header class="topbar">
+      <div class="topbar-title">LegalMind AI</div>
+      <div class="topbar-label">Multilingual AI Assistant</div>
+    </header>
 
-    <p class="intro">
-      Explore legal questions, understand complex legal concepts,
-      and discover relevant legal sources with the power of artificial intelligence.
-    </p>
+    <!-- MESSAGES SCROLL AREA -->
 
-    <div class="features">
-      <div class="feature">🌐 Uzbek · English · Russian</div>
-      <div class="feature">⚖ Automatic Legal Jurisdiction</div>
-      <div class="feature">✧ All Topics · AI-Powered</div>
-    </div>
+    <main class="messages" id="messages">
+      <div class="messages-inner" id="messagesInner">
 
-    <section class="chat-card" id="chat">
-      <div class="card-heading">
-        <h2>Ask LegalMind AI</h2>
-        <p>Ask anything. Write in Uzbek, English, or Russian. LegalMind AI will identify the relevant jurisdiction when your question is about law.</p>
-      </div>
+        <div class="welcome" id="welcome">
+          <div class="welcome-icon">⚖</div>
 
-      <label for="question">Your message</label>
-      <textarea
-        id="question"
-        maxlength="6000"
-        placeholder="Message LegalMind AI... Ask about law, science, technology, history, business, education, or anything else."
-      ></textarea>
-      <p class="composer-hint">No need to select a country. Legal jurisdiction is identified automatically when possible.</p>
+          <h1>How can I help <span>you today?</span></h1>
 
-      <button class="submit-btn" id="askButton" type="button">
-        Ask LegalMind AI &nbsp; →
-      </button>
+          <p>
+            Ask anything in Uzbek, English, or Russian.
+            LegalMind AI can help with law, education,
+            technology, business, science, and much more.
+          </p>
 
-      <div id="answer" aria-live="polite">
-        <div class="answer-toolbar">
-          <div class="answer-title">⚖ LegalMind AI Response</div>
-          <div class="answer-actions">
-            <button class="small-action" id="copyButton" type="button">Copy Answer</button>
-            <button class="small-action" id="clearButton" type="button">Clear</button>
+          <div class="suggestions">
+            <button class="suggestion" data-question="O‘zbekiston qonunchiligida shartnoma qanday bekor qilinadi?">
+              ⚖ Uzbekistan law
+            </button>
+
+            <button class="suggestion" data-question="Explain artificial intelligence in simple terms.">
+              ✦ Artificial intelligence
+            </button>
+
+            <button class="suggestion" data-question="Can a 17-year-old enter a contract in California?">
+              📚 California law
+            </button>
           </div>
         </div>
-        <div id="answerText"></div>
+
       </div>
-    </section>
+    </main>
 
-    <p class="disclaimer">
-      LegalMind AI provides educational information only and does not
-      constitute legal advice. AI-generated responses may contain errors.
-      Always verify applicable laws and consult a qualified attorney.
-    </p>
-  </main>
+    <!-- FIXED BOTTOM MESSAGE INPUT -->
 
-  <footer id="official-sources">
-    <p>Official research portals:
-      <a href="https://leginfo.legislature.ca.gov/faces/codes.xhtml" target="_blank" rel="noopener noreferrer">California Legislative Information</a>
-      · <a href="https://uscode.house.gov/" target="_blank" rel="noopener noreferrer">U.S. Code</a>
-      · <a href="https://lex.uz/" target="_blank" rel="noopener noreferrer">LexUZ</a>
-    </p>
-    <p style="margin-top: 9px;">© 2026 <span>LegalMind AI</span>. Built for smarter legal understanding.</p>
-  </footer>
+    <footer class="composer-area">
 
-  <div class="toast" id="toast" role="status"></div>
+      <div class="composer">
 
-  <script>
-    const questionInput = document.getElementById("question");
-    const answerBox = document.getElementById("answer");
-    const answerText = document.getElementById("answerText");
-    const askButton = document.getElementById("askButton");
-    const copyButton = document.getElementById("copyButton");
-    const clearButton = document.getElementById("clearButton");
-    const newChatButton = document.getElementById("newChatButton");
-    const historyList = document.getElementById("historyList");
-    const historyEmpty = document.getElementById("historyEmpty");
-    const toast = document.getElementById("toast");
+        <textarea
+          id="question"
+          rows="1"
+          maxlength="6000"
+          placeholder="Message LegalMind AI..."
+        ></textarea>
 
-    const HISTORY_STORAGE_KEY = "legalmind_chat_history_v1";
-    let currentConversationId = null;
-    let toastTimeout = null;
+        <button
+          class="send-button"
+          id="sendButton"
+          title="Send message"
+          aria-label="Send message"
+        >↑</button>
 
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => toast.classList.remove("show"), 2200);
-    }
+      </div>
 
-    function getHistory() {
+      <p class="composer-note">
+        LegalMind AI can make mistakes. Verify important legal information with official sources.
+      </p>
+
+    </footer>
+
+  </section>
+
+</div>
+
+<script>
+const questionInput = document.getElementById("question");
+const messages = document.getElementById("messages");
+const messagesInner = document.getElementById("messagesInner");
+const sendButton = document.getElementById("sendButton");
+const newChatButton = document.getElementById("newChatButton");
+const historyList = document.getElementById("historyList");
+const welcome = document.getElementById("welcome");
+
+const STORAGE_KEY = "legalmind_conversations_v3";
+
+let conversations = loadConversations();
+let currentChatId = null;
+let isLoading = false;
+
+function loadConversations() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveConversations() {
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(conversations.slice(0, 50))
+    );
+  } catch {
+    console.warn("Could not save conversations.");
+  }
+}
+
+function createId() {
+  return Date.now().toString(36) +
+    Math.random().toString(36).slice(2, 9);
+}
+
+function currentConversation() {
+  return conversations.find(chat => chat.id === currentChatId);
+}
+
+function renderHistory() {
+  historyList.innerHTML = "";
+
+  if (conversations.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty-history";
+    empty.textContent = "Your conversations will appear here.";
+    historyList.appendChild(empty);
+    return;
+  }
+
+  conversations.forEach(chat => {
+    const button = document.createElement("button");
+
+    button.className =
+      "history-item" +
+      (chat.id === currentChatId ? " active" : "");
+
+    button.type = "button";
+
+    const icon = document.createElement("span");
+    icon.textContent = "💬";
+
+    const title = document.createElement("span");
+    title.textContent = chat.title || "New conversation";
+
+    button.appendChild(icon);
+    button.appendChild(title);
+
+    button.addEventListener("click", () => {
+      openChat(chat.id);
+    });
+
+    historyList.appendChild(button);
+  });
+}
+
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    messages.scrollTop = messages.scrollHeight;
+  });
+}
+
+function showWelcome() {
+  messagesInner.innerHTML = "";
+
+  const welcomeBox = document.createElement("div");
+  welcomeBox.className = "welcome";
+  welcomeBox.id = "welcome";
+
+  const icon = document.createElement("div");
+  icon.className = "welcome-icon";
+  icon.textContent = "⚖";
+
+  const heading = document.createElement("h1");
+  heading.append("How can I help ");
+
+  const headingSpan = document.createElement("span");
+  headingSpan.textContent = "you today?";
+  heading.appendChild(headingSpan);
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent =
+    "Ask anything in Uzbek, English, or Russian. LegalMind AI can help with law, education, technology, business, science, and much more.";
+
+  const suggestions = document.createElement("div");
+  suggestions.className = "suggestions";
+
+  const examples = [
+    ["⚖ Uzbekistan law", "O‘zbekiston qonunchiligida shartnoma qanday bekor qilinadi?"],
+    ["✦ Artificial intelligence", "Explain artificial intelligence in simple terms."],
+    ["📚 California law", "Can a 17-year-old enter a contract in California?"]
+  ];
+
+  examples.forEach(([label, question]) => {
+    const button = document.createElement("button");
+    button.className = "suggestion";
+    button.textContent = label;
+    button.addEventListener("click", () => {
+      questionInput.value = question;
+      sendMessage();
+    });
+    suggestions.appendChild(button);
+  });
+
+  welcomeBox.append(icon, heading, paragraph, suggestions);
+  messagesInner.appendChild(welcomeBox);
+}
+
+function addMessage(role, content) {
+  const message = document.createElement("div");
+  message.className = "message " + role;
+
+  if (role === "assistant") {
+    const avatar = document.createElement("div");
+    avatar.className = "message-avatar";
+    avatar.textContent = "⚖";
+    message.appendChild(avatar);
+  }
+
+  const contentBox = document.createElement("div");
+  contentBox.className = "message-content";
+  contentBox.textContent = content;
+
+  message.appendChild(contentBox);
+
+  if (role === "assistant") {
+    const tools = document.createElement("div");
+    tools.className = "message-tools";
+
+    const copy = document.createElement("button");
+    copy.textContent = "Copy";
+    copy.addEventListener("click", async () => {
       try {
-        const saved = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || "[]");
-        return Array.isArray(saved) ? saved : [];
+        await navigator.clipboard.writeText(content);
+        copy.textContent = "Copied!";
+        setTimeout(() => copy.textContent = "Copy", 1500);
       } catch {
-        return [];
-      }
-    }
-
-    function saveHistory(history) {
-      try {
-        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history.slice(0, 30)));
-      } catch {
-        showToast("Could not save chat history in this browser.");
-      }
-    }
-
-    function renderHistory() {
-      const history = getHistory();
-      historyList.innerHTML = "";
-
-      if (history.length === 0) {
-        const empty = document.createElement("p");
-        empty.className = "history-empty";
-        empty.textContent = "Your recent conversations will appear here.";
-        historyList.appendChild(empty);
-        return;
-      }
-
-      history.forEach((item) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "history-item";
-        button.textContent = item.question || "Untitled conversation";
-        button.title = item.question || "";
-        button.addEventListener("click", () => openConversation(item.id));
-        historyList.appendChild(button);
-      });
-    }
-
-    function startNewChat() {
-      currentConversationId = null;
-      questionInput.value = "";
-      answerText.textContent = "";
-      answerBox.style.display = "none";
-      questionInput.focus();
-      showToast("New chat started.");
-    }
-
-    function openConversation(id) {
-      const conversation = getHistory().find((item) => item.id === id);
-      if (!conversation) {
-        showToast("This conversation could not be found.");
-        renderHistory();
-        return;
-      }
-
-      currentConversationId = conversation.id;
-      questionInput.value = conversation.question || "";
-      answerText.textContent = conversation.answer || "";
-      answerBox.style.display = conversation.answer ? "block" : "none";
-      document.getElementById("chat").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function saveConversation(question, answer) {
-      const history = getHistory();
-      const id = currentConversationId || (
-        Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
-      );
-
-      const existingIndex = history.findIndex((item) => item.id === id);
-      const conversation = {
-        id,
-        question,
-        answer,
-        country: "Automatic",
-        updatedAt: new Date().toISOString()
-      };
-
-      if (existingIndex >= 0) {
-        history.splice(existingIndex, 1);
-      }
-
-      history.unshift(conversation);
-      saveHistory(history);
-      currentConversationId = id;
-      renderHistory();
-    }
-
-    async function askQuestion() {
-      const question = questionInput.value.trim();
-
-      if (!question) {
-        showToast("Please enter a legal question first.");
-        questionInput.focus();
-        return;
-      }
-
-      answerBox.style.display = "block";
-      answerText.textContent = "LegalMind AI is thinking...";
-      askButton.disabled = true;
-      askButton.textContent = "Please wait...";
-
-      try {
-        const response = await fetch("/api/ask", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            question: question
-          })
-        });
-
-        const rawText = await response.text();
-        let data;
-
-        try {
-          data = JSON.parse(rawText);
-        } catch {
-          throw new Error("The server returned an invalid response. Please try again.");
-        }
-
-        if (!response.ok) {
-          throw new Error(data.error || "Something went wrong.");
-        }
-
-        const finalAnswer = data.answer || "No answer was returned.";
-        answerText.textContent = finalAnswer;
-        saveConversation(question, finalAnswer);
-      } catch (error) {
-        answerText.textContent = "Sorry, an error occurred: " + error.message;
-      } finally {
-        askButton.disabled = false;
-        askButton.textContent = "Ask LegalMind AI →";
-      }
-    }
-
-    async function copyAnswer() {
-      const text = answerText.textContent.trim();
-      if (!text || answerBox.style.display === "none") {
-        showToast("There is no answer to copy.");
-        return;
-      }
-
-      try {
-        await navigator.clipboard.writeText(text);
-        showToast("Answer copied to clipboard.");
-      } catch {
-        const temporary = document.createElement("textarea");
-        temporary.value = text;
-        temporary.style.position = "fixed";
-        temporary.style.opacity = "0";
-        document.body.appendChild(temporary);
-        temporary.select();
-
-        try {
-          document.execCommand("copy");
-          showToast("Answer copied to clipboard.");
-        } catch {
-          showToast("Copy failed. Please select and copy the answer manually.");
-        } finally {
-          temporary.remove();
-        }
-      }
-    }
-
-    function clearAnswer() {
-      answerText.textContent = "";
-      answerBox.style.display = "none";
-      showToast("Answer cleared.");
-    }
-
-    askButton.addEventListener("click", askQuestion);
-    newChatButton.addEventListener("click", startNewChat);
-    copyButton.addEventListener("click", copyAnswer);
-    clearButton.addEventListener("click", clearAnswer);
-
-    questionInput.addEventListener("keydown", (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-        askQuestion();
+        copy.textContent = "Copy unavailable";
       }
     });
 
-    renderHistory();
-  </script>
+    tools.appendChild(copy);
+    contentBox.appendChild(tools);
+  }
+
+  messagesInner.appendChild(message);
+  scrollToBottom();
+
+  return message;
+}
+
+function addThinking() {
+  const message = document.createElement("div");
+  message.className = "message assistant";
+  message.id = "thinkingMessage";
+
+  const avatar = document.createElement("div");
+  avatar.className = "message-avatar";
+  avatar.textContent = "⚖";
+
+  const dots = document.createElement("div");
+  dots.className = "thinking";
+
+  for (let i = 0; i < 3; i++) {
+    dots.appendChild(document.createElement("span"));
+  }
+
+  message.append(avatar, dots);
+  messagesInner.appendChild(message);
+  scrollToBottom();
+}
+
+function saveCurrentChat() {
+  const chat = currentConversation();
+
+  if (!chat) return;
+
+  chat.updatedAt = new Date().toISOString();
+
+  conversations = [
+    chat,
+    ...conversations.filter(item => item.id !== chat.id)
+  ];
+
+  conversations = conversations.slice(0, 50);
+
+  saveConversations();
+  renderHistory();
+}
+
+function openChat(id) {
+  const chat = conversations.find(item => item.id === id);
+
+  if (!chat) return;
+
+  currentChatId = id;
+  messagesInner.innerHTML = "";
+
+  chat.messages.forEach(message => {
+    addMessage(message.role, message.content);
+  });
+
+  renderHistory();
+  scrollToBottom();
+}
+
+function startNewChat() {
+  currentChatId = null;
+  questionInput.value = "";
+  questionInput.style.height = "auto";
+
+  showWelcome();
+  renderHistory();
+  questionInput.focus();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+
+  const question = questionInput.value.trim();
+
+  if (!question) {
+    questionInput.focus();
+    return;
+  }
+
+  if (!currentChatId) {
+    currentChatId = createId();
+
+    conversations.unshift({
+      id: currentChatId,
+      title: question.slice(0, 55),
+      messages: [],
+      updatedAt: new Date().toISOString()
+    });
+  }
+
+  const chat = currentConversation();
+
+  if (!chat) return;
+
+  chat.messages.push({
+    role: "user",
+    content: question
+  });
+
+  if (!chat.title || chat.title === "New conversation") {
+    chat.title = question.slice(0, 55);
+  }
+
+  if (welcome && welcome.parentNode) {
+    welcome.remove();
+  }
+
+  addMessage("user", question);
+
+  questionInput.value = "";
+  questionInput.style.height = "auto";
+
+  isLoading = true;
+  sendButton.disabled = true;
+
+  addThinking();
+  saveCurrentChat();
+
+  try {
+    const response = await fetch("/api/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        question: question
+      })
+    });
+
+    const rawText = await response.text();
+
+    let data;
+
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      throw new Error(
+        "The server returned an invalid response."
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "The AI service returned an error."
+      );
+    }
+
+    const answer = data.answer || "No answer was returned.";
+
+    const thinking = document.getElementById("thinkingMessage");
+    if (thinking) thinking.remove();
+
+    chat.messages.push({
+      role: "assistant",
+      content: answer
+    });
+
+    addMessage("assistant", answer);
+
+    saveCurrentChat();
+
+  } catch (error) {
+    const thinking = document.getElementById("thinkingMessage");
+    if (thinking) thinking.remove();
+
+    const errorMessage =
+      "Sorry, an error occurred: " + error.message;
+
+    chat.messages.push({
+      role: "assistant",
+      content: errorMessage
+    });
+
+    addMessage("assistant", errorMessage);
+    saveCurrentChat();
+
+  } finally {
+    isLoading = false;
+    sendButton.disabled = false;
+    questionInput.focus();
+  }
+}
+
+/* EVENTS */
+
+sendButton.addEventListener("click", sendMessage);
+
+newChatButton.addEventListener("click", startNewChat);
+
+questionInput.addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
+
+questionInput.addEventListener("input", () => {
+  questionInput.style.height = "auto";
+
+  questionInput.style.height =
+    Math.min(questionInput.scrollHeight, 180) + "px";
+});
+
+document.querySelectorAll(".suggestion").forEach(button => {
+  button.addEventListener("click", () => {
+    questionInput.value = button.dataset.question;
+    sendMessage();
+  });
+});
+
+/* INITIALIZE */
+
+renderHistory();
+showWelcome();
+
+</script>
+
 </body>
 </html>
