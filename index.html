@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090d1c">
-  <meta name="description" content="Explore legal concepts and ask questions about United States and Uzbekistan law with LegalMind AI.">
+  <meta name="description" content="Ask LegalMind AI questions about law and any topic in Uzbek, English, or Russian.">
   <title>LegalMind AI | Your Intelligent Legal Assistant</title>
 
   <style>
@@ -275,9 +275,10 @@
     }
 
     .status {
-      display: inline-flex;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 9px;
+      gap: 7px;
       padding: 9px 17px;
       border: 1px solid rgba(217, 184, 117, 0.27);
       border-radius: 30px;
@@ -287,6 +288,12 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 25px;
+    }
+
+    .status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
     }
 
     .status-dot {
@@ -370,11 +377,10 @@
       font-weight: 650;
     }
 
-    select,
     textarea {
       display: block;
       width: 100%;
-      padding: 14px 16px;
+      padding: 20px 19px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.13);
       background: rgba(7,12,27,0.72);
@@ -385,25 +391,27 @@
       transition: border 0.25s, box-shadow 0.25s;
     }
 
-    select:focus,
     textarea:focus {
       border-color: var(--gold);
       box-shadow: 0 0 0 3px rgba(217,184,117,0.1);
     }
 
-    select option {
-      background: #10172d;
-      color: white;
-    }
-
     textarea {
-      min-height: 145px;
+      min-height: 230px;
       resize: vertical;
-      line-height: 1.65;
+      line-height: 1.75;
+      font-size: 15px;
     }
 
     textarea::placeholder {
       color: #78839a;
+    }
+
+    .composer-hint {
+      margin-top: 10px;
+      color: #8993a9;
+      font-size: 11px;
+      line-height: 1.6;
     }
 
     .submit-btn {
@@ -709,7 +717,7 @@
 
     <div class="sidebar-bottom">
       <span>LegalMind AI</span>
-      <small>Legal research assistant · v2.1</small>
+      <small>Multilingual AI assistant · v2.2</small>
     </div>
   </aside>
 
@@ -718,13 +726,15 @@
       <div class="brand-icon">⚖</div>
       <div>LegalMind <span>AI</span></div>
     </div>
-    <div class="nav-label">Intelligent Legal Research</div>
+    <div class="nav-label">Multilingual AI Assistant</div>
   </header>
 
   <main>
     <div class="status">
-      <span class="status-dot"></span>
-      AI Legal Assistant
+      <div class="status-label">
+        <span class="status-dot"></span>
+        AI Legal Assistant
+      </div>
       <div class="creator">Made by Jasurbek Komilov</div>
     </div>
 
@@ -739,29 +749,24 @@
     </p>
 
     <div class="features">
-      <div class="feature">⚖ United States Law</div>
-      <div class="feature">✦ Uzbekistan Law</div>
-      <div class="feature">✧ AI-Powered Research</div>
+      <div class="feature">🌐 Uzbek · English · Russian</div>
+      <div class="feature">⚖ Automatic Legal Jurisdiction</div>
+      <div class="feature">✧ All Topics · AI-Powered</div>
     </div>
 
     <section class="chat-card" id="chat">
       <div class="card-heading">
         <h2>Ask LegalMind AI</h2>
-        <p>Choose your jurisdiction and describe your legal question below.</p>
+        <p>Ask anything. Write in Uzbek, English, or Russian. LegalMind AI will identify the relevant jurisdiction when your question is about law.</p>
       </div>
 
-      <label for="country">Select jurisdiction</label>
-      <select id="country">
-        <option value="United States">United States Law</option>
-        <option value="Uzbekistan">Uzbekistan Law</option>
-      </select>
-
-      <label for="question">Your legal question</label>
+      <label for="question">Your message</label>
       <textarea
         id="question"
         maxlength="6000"
-        placeholder="Example: Can a 17-year-old enter into a legally binding contract in California?"
+        placeholder="Message LegalMind AI... Ask about law, science, technology, history, business, education, or anything else."
       ></textarea>
+      <p class="composer-hint">No need to select a country. Legal jurisdiction is identified automatically when possible.</p>
 
       <button class="submit-btn" id="askButton" type="button">
         Ask LegalMind AI &nbsp; →
@@ -799,7 +804,6 @@
 
   <script>
     const questionInput = document.getElementById("question");
-    const countrySelect = document.getElementById("country");
     const answerBox = document.getElementById("answer");
     const answerText = document.getElementById("answerText");
     const askButton = document.getElementById("askButton");
@@ -866,7 +870,6 @@
       questionInput.value = "";
       answerText.textContent = "";
       answerBox.style.display = "none";
-      countrySelect.value = "United States";
       questionInput.focus();
       showToast("New chat started.");
     }
@@ -881,13 +884,12 @@
 
       currentConversationId = conversation.id;
       questionInput.value = conversation.question || "";
-      countrySelect.value = conversation.country || "United States";
       answerText.textContent = conversation.answer || "";
       answerBox.style.display = conversation.answer ? "block" : "none";
       document.getElementById("chat").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    function saveConversation(question, country, answer) {
+    function saveConversation(question, answer) {
       const history = getHistory();
       const id = currentConversationId || (
         Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
@@ -897,8 +899,8 @@
       const conversation = {
         id,
         question,
-        country,
         answer,
+        country: "Automatic",
         updatedAt: new Date().toISOString()
       };
 
@@ -914,7 +916,6 @@
 
     async function askQuestion() {
       const question = questionInput.value.trim();
-      const country = countrySelect.value;
 
       if (!question) {
         showToast("Please enter a legal question first.");
@@ -934,8 +935,7 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            question: question,
-            country: country
+            question: question
           })
         });
 
@@ -954,7 +954,7 @@
 
         const finalAnswer = data.answer || "No answer was returned.";
         answerText.textContent = finalAnswer;
-        saveConversation(question, country, finalAnswer);
+        saveConversation(question, finalAnswer);
       } catch (error) {
         answerText.textContent = "Sorry, an error occurred: " + error.message;
       } finally {
