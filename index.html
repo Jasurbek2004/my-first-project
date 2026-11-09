@@ -10,6 +10,78 @@
 
   <meta name="description" content="Explore legal concepts and ask questions about United States and Uzbekistan law with LegalMind AI.">
 
+  /* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  padding: 28px 20px;
+  background: rgba(8, 15, 30, 0.95);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.sidebar-logo {
+  font-size: 21px;
+  font-weight: bold;
+  margin-bottom: 35px;
+}
+
+.sidebar-logo span {
+  color: #d6b56d;
+}
+
+.new-chat-btn {
+  padding: 14px;
+  border: 1px solid rgba(214,181,109,0.5);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d6b56d, #a9823d);
+  color: #101827;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sidebar-section {
+  margin-top: 35px;
+}
+
+.sidebar-section p {
+  color: #7f8da5;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
+
+.sidebar-link {
+  padding: 13px 10px;
+  color: #c5cede;
+  border-radius: 9px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sidebar-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #d6b56d;
+}
+
+.sidebar-bottom small {
+  color: #7f8da5;
+}
   <style>
     * {
       margin: 0;
