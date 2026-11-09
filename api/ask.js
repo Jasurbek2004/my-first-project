@@ -1,4 +1,5 @@
 const OFFICIAL_SOURCES = require("./sources");
+const LEGAL_DATA = require("./legal-data");
 module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== "POST") {
@@ -33,7 +34,16 @@ const sourceList = (OFFICIAL_SOURCES[country] || [])
     `- ${source.name} (${source.jurisdiction}): ${source.url}`
   )
   .join("\n");
-    
+    const legalInfo = LEGAL_DATA[country];
+
+const legalContext = legalInfo
+  ? legalInfo.laws.map(law =>
+      `Title: ${law.title}
+Topic: ${law.topic}
+Reference summary: ${law.summary}
+Official URL: ${law.url}`
+    ).join("\n\n")
+  : "No curated legal references are available for this jurisdiction.";
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -55,8 +65,16 @@ ${sourceList}
 These are official source portals, not retrieved legal texts.
 Never claim that you accessed or verified a statute unless
 its actual text was retrieved and checked.
-Use only genuine legal citations.
-If the exact legal provision cannot be verified, say so.
+
+CURATED LEGAL REFERENCES:
+${legalContext}
+
+Use these references only when relevant to the user's question.
+These are summaries, not the full statutory text.
+Do not present a summary as a direct quotation from a law.
+If a relevant provision is not included, clearly say that it
+has not been verified in the current legal database.
+
 IMPORTANT LEGAL ACCURACY RULES:
 
 1. Answer in clear, simple English.
