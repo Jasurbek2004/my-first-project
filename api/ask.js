@@ -2,6 +2,83 @@
 const OFFICIAL_SOURCES = require("./sources");
 const LEGAL_DATA = require("./legal-data");
 
+// LEGALMIND AI FOUNDER PROFILE
+const FOUNDER_PROFILE = {
+  name: "Jasurbek Rasuljon o‘g‘li Komilov",
+  professionalName: "Jasurbek Komilov",
+  role: "Founder and Developer of LegalMind AI",
+  nationality: "Uzbekistan",
+
+  education: [
+    {
+      institution: "Tashkent State University of Law",
+      degree: "Bachelor of Laws (LL.B.)",
+      period: "2022–2026",
+      gpa: "93/100"
+    },
+    {
+      institution: "University of the Pacific, McGeorge School of Law",
+      degree: "LL.M. in Transnational Business Practice",
+      period: "Fall 2026",
+      status: "Current student"
+    }
+  ],
+
+  experience: [
+    {
+      organization: "Association of Arbitration Courts",
+      role: "Legal Intern",
+      period: "January–May 2024"
+    },
+    {
+      organization: "Olmazor District Prosecutor's Office",
+      role: "Legal Intern",
+      period: "June 2024–June 2025"
+    },
+    {
+      organization: "Marhamat District Prosecutor's Office",
+      role: "Legal Intern",
+      period: "June–August 2025"
+    },
+    {
+      organization: "Business Lawyers Group (BLG)",
+      role: "Legal Intern",
+      period: "February–August 2026"
+    }
+  ],
+
+  achievements: [
+    "IELTS Academic score: 7.5",
+    "English proficiency: CEFR C1",
+    "Gold Medal graduate of Specialized Boarding School No. 31",
+    "History Olympiad: three district-level and one regional achievement",
+    "Model United Nations participant",
+    "Best Delegate nominee"
+  ],
+
+  languages: [
+    "Uzbek — Native",
+    "English — Advanced (C1)",
+    "Russian — Intermediate"
+  ],
+
+  interests: [
+    "International law",
+    "Transnational business law",
+    "Legal technology",
+    "Artificial intelligence",
+    "Legal research",
+    "Entrepreneurship"
+  ],
+
+  project: {
+    name: "LegalMind AI",
+    founder: "Jasurbek Komilov",
+    purpose:
+      "To make legal information and legal research more accessible through artificial intelligence."
+  }
+};
+
 module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== "POST") {
@@ -54,6 +131,12 @@ module.exports = async (req, res) => {
       2
     );
 
+    const founderContext = JSON.stringify(
+      FOUNDER_PROFILE,
+      null,
+      2
+    );
+
     // AI instructions
     const prompt = `
 You are LegalMind AI, a professional multilingual AI assistant.
@@ -92,6 +175,64 @@ LEGAL ACCURACY:
 - Explain when a rule may depend on jurisdiction.
 - Provide educational legal information, not personal legal advice.
 - Do not claim that you checked official websites unless you did.
+
+FOUNDER AND CREATOR INFORMATION:
+
+The founder and developer of LegalMind AI is
+Jasurbek Rasuljon o‘g‘li Komilov,
+professionally known as Jasurbek Komilov.
+
+FOUNDER PROFILE:
+${founderContext}
+
+FOUNDER QUESTION RULES:
+
+1. You must recognize questions about Jasurbek Komilov
+   in Uzbek, English, Russian, and other supported languages.
+
+2. Examples of questions include:
+   - Who is Jasurbek Komilov?
+   - Who created LegalMind AI?
+   - Who is your founder?
+   - Who developed this AI?
+   - Tell me about Jasurbek.
+   - What is his educational background?
+   - What is his GPA?
+   - Where did he study?
+   - What is his professional experience?
+   - What are his achievements?
+   - What languages does he speak?
+   - What are his career interests?
+   - Why was LegalMind AI created?
+   - Jasurbek Komilov kim?
+   - LegalMind AI asoschisi kim?
+   - Jasurbekning GPA ko‘rsatkichi qancha?
+   - Кто создал LegalMind AI?
+   - Кто такой Джасурбек Комилов?
+
+3. When asked who created, founded, or developed
+   LegalMind AI, clearly identify Jasurbek Komilov.
+
+4. When asked who Jasurbek Komilov is,
+   provide a professional biography using the founder profile.
+
+5. Answer specific questions using only relevant facts.
+   Do not repeat the entire biography unless requested.
+
+6. Never invent additional education, employment,
+   awards, personal details, or professional qualifications.
+
+7. Do not claim that Jasurbek is a licensed attorney.
+   Describe his actual education and experience accurately.
+
+8. Never disclose private contact details or sensitive information.
+
+9. Do not confuse the founder of LegalMind AI with
+   the developers of the underlying Gemini AI model.
+   Explain the distinction when relevant.
+
+10. If the information is not included in the founder profile,
+    honestly say that you do not have that information.
 
 GENERAL ANSWERING:
 - Answer the actual question directly.
