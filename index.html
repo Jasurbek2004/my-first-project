@@ -4,141 +4,484 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LegalMind AI</title>
+  <meta name="theme-color" content="#090d1c">
+
+  <title>LegalMind AI | Your Intelligent Legal Assistant</title>
+
+  <meta name="description" content="Explore legal concepts and ask questions about United States and Uzbekistan law with LegalMind AI.">
+
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101827;
-      color: white;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gold: #d9b875;
+      --gold-light: #f0d59b;
+      --text: #f5f6fc;
+      --muted: #a7b0c5;
+      --glass: rgba(255, 255, 255, 0.055);
+      --border: rgba(255, 255, 255, 0.11);
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 10% 15%, rgba(52, 69, 153, 0.35), transparent 40%),
+        radial-gradient(ellipse at 90% 20%, rgba(108, 55, 151, 0.28), transparent 38%),
+        radial-gradient(ellipse at 50% 100%, rgba(24, 92, 112, 0.22), transparent 45%),
+        linear-gradient(135deg, #080c19 0%, #10172d 48%, #090d1b 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.15;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 45px 45px;
+    }
+
+    .navbar {
+      width: 100%;
+      padding: 23px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7, 11, 24, 0.55);
+      backdrop-filter: blur(18px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 21px;
+      font-weight: 750;
+      letter-spacing: -0.6px;
+    }
+
+    .brand-icon {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(217, 184, 117, 0.5);
+      border-radius: 12px;
+      background: rgba(217, 184, 117, 0.1);
+      color: var(--gold-light);
+      font-size: 23px;
+    }
+
+    .brand span {
+      color: var(--gold-light);
+    }
+
+    .nav-label {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    main {
+      width: min(850px, 90%);
+      margin: 75px auto 60px;
+      position: relative;
+      z-index: 1;
       text-align: center;
     }
-    header {
-      padding: 25px;
-      border-bottom: 1px solid #344054;
-      font-size: 24px;
-      font-weight: bold;
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 17px;
+      border: 1px solid rgba(217, 184, 117, 0.27);
+      border-radius: 30px;
+      background: rgba(217, 184, 117, 0.07);
+      color: var(--gold-light);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 26px;
     }
-    main {
-      max-width: 700px;
-      margin: 80px auto;
-      padding: 20px;
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #72d6a0;
+      box-shadow: 0 0 10px #72d6a0;
     }
-    h1 { font-size: 38px; }
-    p { color: #b8c3d4; line-height: 1.6; }
-    select, textarea, button {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 15px;
-      margin-top: 15px;
-      border-radius: 9px;
+
+    h1 {
+      font-size: clamp(38px, 6vw, 64px);
+      line-height: 1.12;
+      letter-spacing: -2px;
+      font-weight: 800;
+      margin-bottom: 22px;
+    }
+
+    h1 span {
+      background: linear-gradient(100deg, #f0d59b, #d5a95f, #f5e2b8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .intro {
+      max-width: 610px;
+      margin: 0 auto;
+      color: var(--muted);
       font-size: 16px;
+      line-height: 1.8;
     }
-    select, textarea {
-      background: #202d40;
-      color: white;
-      border: 1px solid #43536b;
+
+    .features {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 29px 0 36px;
     }
-    textarea { height: 120px; resize: vertical; }
-    button {
-      background: #3978ee;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
+
+    .feature {
+      padding: 9px 15px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      color: #c8cede;
+      font-size: 12px;
     }
-    button:hover { background: #245bc2; }
-    #answer {
-      display: none;
-      background: #202d40;
-      padding: 20px;
-      margin-top: 25px;
-      border-radius: 10px;
+
+    .chat-card {
+      padding: 30px;
       text-align: left;
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 22px;
+      background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.085),
+        rgba(255,255,255,0.025)
+      );
+      box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+      backdrop-filter: blur(20px);
+    }
+
+    .card-heading {
+      margin-bottom: 24px;
+    }
+
+    .card-heading h2 {
+      font-size: 19px;
+      margin-bottom: 7px;
+    }
+
+    .card-heading p {
+      color: var(--muted);
+      font-size: 13px;
       line-height: 1.6;
     }
-    .disclaimer {
+
+    label {
+      display: block;
+      margin: 20px 0 10px;
+      color: #e2e6f0;
       font-size: 13px;
-      margin-top: 40px;
+      font-weight: 650;
+    }
+
+    select, textarea {
+      display: block;
+      width: 100%;
+      padding: 15px 17px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.13);
+      background: rgba(7,12,27,0.72);
+      color: white;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.25s, box-shadow 0.25s;
+    }
+
+    select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(217,184,117,0.1);
+    }
+
+    select option {
+      background: #10172d;
+      color: white;
+    }
+
+    textarea {
+      min-height: 145px;
+      resize: vertical;
+      line-height: 1.65;
+    }
+
+    textarea::placeholder {
+      color: #78839a;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 19px;
+      padding: 16px 20px;
+      border: 0;
+      border-radius: 12px;
+      color: #151321;
+      background: linear-gradient(105deg, #e8cb91, #c99d53);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 9px 28px rgba(217,184,117,0.23);
+    }
+
+    .submit-btn:disabled {
+      cursor: wait;
+      opacity: 0.65;
+      transform: none;
+    }
+
+    #answer {
+      display: none;
+      margin-top: 25px;
+      padding: 23px;
+      border: 1px solid rgba(217,184,117,0.25);
+      border-radius: 15px;
+      background: rgba(5,10,23,0.72);
+      color: #e4e8f2;
+      text-align: left;
+      line-height: 1.8;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .answer-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: var(--gold-light);
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .disclaimer {
+      max-width: 650px;
+      margin: 27px auto 0;
+      color: #8993a9;
+      font-size: 12px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    footer {
+      padding: 25px 7%;
+      border-top: 1px solid var(--border);
+      color: #7f899f;
+      text-align: center;
+      font-size: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer span {
+      color: var(--gold);
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 18px 5%;
+      }
+
+      .nav-label {
+        display: none;
+      }
+
+      main {
+        margin-top: 48px;
+        width: 92%;
+      }
+
+      h1 {
+        letter-spacing: -1.2px;
+      }
+
+      .intro {
+        font-size: 14px;
+      }
+
+      .chat-card {
+        padding: 21px 17px;
+        border-radius: 17px;
+      }
+
+      .features {
+        gap: 8px;
+      }
+
+      .feature {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <header>⚖️ LegalMind AI</header>
+
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-icon">⚖</div>
+      <div>LegalMind <span>AI</span></div>
+    </div>
+
+    <div class="nav-label">Intelligent Legal Research</div>
+  </header>
 
   <main>
-    <h1>Your AI Legal Assistant</h1>
-    <p>
-      Ask legal questions and explore legal concepts
-      with the help of artificial intelligence.
+
+    <div class="status">
+      <span class="status-dot"></span>
+      AI Legal Assistant
+    </div>
+
+    <h1>
+      Understand the Law.<br>
+      <span>Think Smarter.</span>
+    </h1>
+
+    <p class="intro">
+      Explore legal questions, understand complex legal concepts,
+      and discover relevant legal sources with the power of artificial intelligence.
     </p>
 
-    <select id="country">
-      <option value="United States">United States Law</option>
-      <option value="Uzbekistan">Uzbekistan Law</option>
-    </select>
+    <div class="features">
+      <div class="feature">⚖ United States Law</div>
+      <div class="feature">✦ Uzbekistan Law</div>
+      <div class="feature">✧ AI-Powered Research</div>
+    </div>
 
-    <textarea id="question"
-      placeholder="Write your legal question here..."></textarea>
+    <section class="chat-card">
 
-    <button onclick="askQuestion()">Ask LegalMind AI</button>
+      <div class="card-heading">
+        <h2>Ask LegalMind AI</h2>
+        <p>Choose your jurisdiction and describe your legal question below.</p>
+      </div>
 
-    <div id="answer"></div>
+      <label for="country">Select jurisdiction</label>
+
+      <select id="country">
+        <option value="United States">United States Law</option>
+        <option value="Uzbekistan">Uzbekistan Law</option>
+      </select>
+
+      <label for="question">Your legal question</label>
+
+      <textarea
+        id="question"
+        placeholder="Example: Can a 17-year-old enter into a legally binding contract in California?"
+      ></textarea>
+
+      <button class="submit-btn" id="askButton" onclick="askQuestion()">
+        Ask LegalMind AI &nbsp; →
+      </button>
+
+      <div id="answer">
+        <div class="answer-title">⚖ LegalMind AI Response</div>
+        <div id="answerText"></div>
+      </div>
+
+    </section>
 
     <p class="disclaimer">
-      Educational demonstration only. Not legal advice.
-      Always consult a qualified attorney.
+      LegalMind AI provides educational information only and does not
+      constitute legal advice. AI-generated responses may contain errors.
+      Always verify applicable laws and consult a qualified attorney.
     </p>
+
   </main>
 
- 
-<script>
-  async function askQuestion() {
-    const question = document.getElementById("question").value.trim();
-    const country = document.getElementById("country").value;
-    const answer = document.getElementById("answer");
-    const button = document.querySelector("button");
+  <footer>
+    © 2026 <span>LegalMind AI</span>. Built for smarter legal understanding.
+  </footer>
 
-    if (!question) {
-      alert("Please enter a legal question.");
-      return;
-    }
+  <script>
+    async function askQuestion() {
+      const question = document.getElementById("question").value.trim();
+      const country = document.getElementById("country").value;
+      const answer = document.getElementById("answer");
+      const answerText = document.getElementById("answerText");
+      const button = document.getElementById("askButton");
 
-    answer.style.display = "block";
-    answer.style.whiteSpace = "pre-wrap";
-    answer.textContent = "LegalMind AI is thinking...";
-    button.disabled = true;
-    button.textContent = "Please wait...";
-
-    try {
-      const response = await fetch("/api/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          question: question,
-          country: country
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong.");
+      if (!question) {
+        alert("Please enter a legal question.");
+        return;
       }
 
-      answer.textContent = data.answer;
+      answer.style.display = "block";
+      answerText.textContent = "LegalMind AI is thinking...";
+      button.disabled = true;
+      button.textContent = "Please wait...";
 
-    } catch (error) {
-      answer.textContent =
-        "Sorry, an error occurred: " + error.message;
+      try {
+        const response = await fetch("/api/ask", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            question: question,
+            country: country
+          })
+        });
 
-    } finally {
-      button.disabled = false;
-      button.textContent = "Ask LegalMind AI";
+        const rawText = await response.text();
+        let data;
+
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          throw new Error(
+            "The server returned an invalid response. Please try again."
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong.");
+        }
+
+        answerText.textContent = data.answer || "No answer was returned.";
+
+      } catch (error) {
+        answerText.textContent = "Sorry, an error occurred: " + error.message;
+
+      } finally {
+        button.disabled = false;
+        button.textContent = "Ask LegalMind AI →";
+      }
     }
-  }
-</script>
+  </script>
+
 </body>
 </html>
